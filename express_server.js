@@ -2,16 +2,15 @@ const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
 
-function generateRandomString() {
-
+const generateRandomString = function() {
   let result = '';
   let length = 6;
   let chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  for (var i = length; i > 0; --i) {
+  for (let i = length; i > 0; --i) {
     result += chars[Math.floor(Math.random() * chars.length)];
   }
   return result;
-}
+};
 
 
 app.set("view engine", "ejs");
@@ -44,14 +43,15 @@ app.get("/hello", (req, res) => {
 app.get("/set", (req, res) => {
   const a = 1;
   res.send(`a = ${a}`);
- });
+});
  
- app.get("/fetch", (req, res) => {
+app.get("/fetch", (req, res) => {
+  let a;
   res.send(`a = ${a}`);
- });
+});
 //above are examples
 
- app.get("/urls", (req, res) => {
+app.get("/urls", (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render("urls_index", templateVars);
 });
@@ -73,15 +73,20 @@ app.get("/urls/:shortURL", (req, res) => {
 
 app.post("/urls", (req, res) => {
 
-    // Log the POST request body to the console
+  // Log the POST request body to the console
   let shortu = generateRandomString();
   urlDatabase[shortu] = req.body.longURL;
-  res.redirect(`/urls/${shortu}`)
+  res.redirect(`/urls/${shortu}`);
   //res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
 app.post("/urls/:shortURL/delete", (req, res) => {
   delete urlDatabase[req.params.shortURL];
   console.log(urlDatabase);
-  res.redirect(`/urls`)
-})
+  res.redirect(`/urls`);
+});
+
+app.post("/urls/:shortURL", (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.longURL;
+  res.redirect(`/urls`);
+});
