@@ -50,6 +50,9 @@ app.use(bodyParser.urlencoded({extended: true}));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+const bcrypt = require('bcrypt');
+//app.use(bcrypt());
+
 
 //get method
 app.get("/", (req, res) => {
@@ -164,10 +167,13 @@ app.post("/login", (req, res) => {
   let passwordnew = req.body.password;
   let found = 0;
   let foundname = "";
+  console.log();
   for (let i in users) {
-    if (emailnew !== "" && emailnew === users[i].email && passwordnew === users[i].password) {
-      found = 1;
-      foundname = i;
+    if (emailnew !== "" && emailnew === users[i].email) {
+      if(bcrypt.compareSync(passwordnew, users[i].password)) {
+        found = 1;
+        foundname = i;
+      }
     }
   }
   if (found) {
@@ -189,9 +195,12 @@ app.post("/register", (req, res) => {
   user.email = req.body.email;
   user.password = req.body.password;
   users[user.id] = user;
+  user.password = bcrypt.hashSync(user.password, 10)
+  console.log(user.password,"Amee",req.body.password);
   if (user.email === "" || user.password === "" || user.email !== users[user.id].email) {
     res.status(404).send('Not found');
   }
+  res.cookie('password',user.password)
   res.cookie('userid',user.id);
   res.redirect(`/urls`);
 });
