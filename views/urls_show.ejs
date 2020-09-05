@@ -9,7 +9,7 @@
 
   <%- include('partials/_header') %>
   <%if (!user) {%>
-    <h1>Please Register/login First<h1>
+    <h4 class="front"> Please Register/login </h4>
   <%} else {%>
   <div class="card text-center">
       <div class="card-header"></div>
@@ -25,6 +25,12 @@
       <input class="form-control" type="text" name="longURL" placeholder="http://" style="width: 300px; margin: 1em">
       <button type="submit" class="btn btn-primary">Submit</button>
     </div>
+    <style>
+      .front {
+        max-width: 500px;
+        margin: auto;
+      }
+    </style>
   </form>
   <% } %>
   <!-- Bootstrap JS -->
